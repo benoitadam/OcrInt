@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcrInt", "OcrInt\OcrInt.csproj", "{8D3E93AD-E0E9-479C-9637-839D990AAF6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcrInt.Tests", "OcrInt.Tests\OcrInt.Tests.csproj", "{BFA3E1EC-F01C-49DF-993A-38129F897563}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{29514B30-44F1-4395-B79E-5A6144D41A86}"
+	ProjectSection(SolutionItems) = preProject
+		NLog.config = NLog.config
+		NLog.xsd = NLog.xsd
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D3E93AD-E0E9-479C-9637-839D990AAF6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D3E93AD-E0E9-479C-9637-839D990AAF6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D3E93AD-E0E9-479C-9637-839D990AAF6A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8D3E93AD-E0E9-479C-9637-839D990AAF6A}.Debug|x64.Build.0 = Debug|Any CPU
+		{8D3E93AD-E0E9-479C-9637-839D990AAF6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D3E93AD-E0E9-479C-9637-839D990AAF6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D3E93AD-E0E9-479C-9637-839D990AAF6A}.Release|x64.ActiveCfg = Release|Any CPU
+		{8D3E93AD-E0E9-479C-9637-839D990AAF6A}.Release|x64.Build.0 = Release|Any CPU
+		{BFA3E1EC-F01C-49DF-993A-38129F897563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFA3E1EC-F01C-49DF-993A-38129F897563}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFA3E1EC-F01C-49DF-993A-38129F897563}.Debug|x64.ActiveCfg = Debug|x64
+		{BFA3E1EC-F01C-49DF-993A-38129F897563}.Debug|x64.Build.0 = Debug|x64
+		{BFA3E1EC-F01C-49DF-993A-38129F897563}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFA3E1EC-F01C-49DF-993A-38129F897563}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFA3E1EC-F01C-49DF-993A-38129F897563}.Release|x64.ActiveCfg = Release|x64
+		{BFA3E1EC-F01C-49DF-993A-38129F897563}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
