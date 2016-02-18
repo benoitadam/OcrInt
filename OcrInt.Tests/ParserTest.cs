@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TeDotAd;
+using OcrInt;
 using Xunit;
 
 namespace OcrInt.Tests
 {
-    public class TagFlyweight
-    {
-        public static Tag Get(string word)
-        {
-            return new Tag();
-        }
-    }
+    //public class TagFlyweight
+    //{
+    //    public static Tag Get(string word)
+    //    {
+    //        return new Tag();
+    //    }
+    //}
 
     //public class Tag
     //{
@@ -111,13 +111,13 @@ www.saintecroix77.fr
 matieres
 fournitures
 mathematiques
-* 2 cahiers grand format 24x32 - grands carreaux - 96 pages.
+* 2 cahiers grand format 24 x 32 - grands carreaux - 96 pages.
 * 1 compas de qualite ouverture 20 cm
 * 1 regle plate graduee 30 cm - 1 rapporteur d’angles — 1 equerre (transpa
 * 1 pochette de papier calque.
 * calculatrice casio fx92 college.
 français
-* 2 cahiers 24x32 - 96 pages - grands carreaux sans spirale.
+* 2 cahiers 24 x 32 - 96 pages - grands carreaux sans spirale.
 t protege-cahiers (2).
 * feuilles simples et doubles grand fonnat perforees.
 * 1 pochette plastifiee à rabats.
@@ -125,7 +125,7 @@ t protege-cahiers (2).
 1l5 : des titres de livres (format poche) seront indiques en cours d’annee
 la lecture personnelle et suivie.
 anglais lv1
-* 1 cahier grand format 24x32 - grands carreaux - 140 pages.
+* 1 cahier grand format 24 x 32 - grands carreaux - 140 pages.
 * 1 protege-cahier pour le couvrir (à rabats).
 * copies grand fonnat — grands carreaux.
 * copies petit format — grands carreaux.
@@ -144,7 +144,7 @@ svt
 * 1 cahier de brouillon — pochettes transparentes.
 * 1 blouse.
 histoirelgeographie
-* 1 cahier grand format 24x32 - petits carreaux — sans spirale - 96 pages.
+* 1 cahier grand format 24 x 32 - petits carreaux — sans spirale - 96 pages.
 * 1 protege-cahiers.
 education civique
 rlen 1 cahier de tp est fourni.
@@ -153,21 +153,30 @@ cdi * a voir avec le professeur à la rentree.
 education musicale
 * 1 grand cahier 24x32.
 etablissement catholique d'enseignement sous contrat d'association avec l'etat";
-            text = text.Simplify();
 
-
+            var doc = new Doc(text);
+            
             // Récupère les mots dans le texte
+            doc.ExtractWords(text);
             var words = Word.GetWords(text);
 
-
-                wordsList.ToArray();
-
             // Recherche les mots clés associés aux mots
-            for (i = 0; i < length; i++)
+            int wordsLength = words.Length;
+            for (int i = 0; i < wordsLength; i++)
             {
+                var group = new Group();
+
+                for (int j = i; j < wordsLength; j++)
+                {
+                    if (!words[j].CanGroup)
+                        break;
+
+                    group.Add(words[j]);
+                }
 
 
             }
+
 
 
             //var doc = (

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace TeDotAd
+namespace OcrInt
 {
     public static class StringExtends
     {
@@ -25,12 +25,10 @@ namespace TeDotAd
         };
         private static string DIACRITICS     = "                                                                 ABCDEFGHIJKLMNOPQRSTUVWXYZ      abcdefghijklmnopqrstuvwxyz                                               a               o     AAAAAAACEEEEIIIIDNOOOOO OUUUUY  aaaaaaaceeeeiiii nooooo ouuuuy yAaAaAaCcCcCcCcDdDdEeEeEeEeEeGgGgGgGgHhHhIiIiIiIiIi  JjKk LlLlLl  LlNnNnNn   OoOoOoOoRrRrRrSsSsSsSsTtTtTtUuUuUuUuUuUuWwYyYZzZzZz b        D       Ff    I  l    OOo         t  TUu     z                      AaIiOoUuUuUuUuUu Aa    GgGgKkOoOo  j               ";
         private static string DIACRITICS_EXT = "                                                                 ABCDEFGHIJKLMNOPQRSTUVWXYZ      abcdefghijklmnopqrstuvwxyz                                       cEoY S Oa   o o 23 uJ  1o     AAAAAAACEEEEIIIIDNOOOOOxOUUUUYpBaaaaaaaceeeeiiiionooooo ouuuuypyAaAaAaCcCcCcCcDdDdEeEeEeEeEeGgGgGgGgHhHhIiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnnNnOoOoOoOoRrRrRrSsSsSsSsTtTtTtUuUuUuUuUuUuWwYyYZzZzZzRbBbbbbCCcDDaaQEEEFfGVhlIKklAUNnOOoNnPpRSsELtTtTUuUUYyZz33332555p    DDdLLlNNnAaIiOoUuUuUuUuUuaAaAaAaGgGgKkOoOo33jDDdGgHPNnAaAaOo";
-        private static string SIMPLIFY       = "          \n                       '    '        0123456789       abcdefghijklmnopqrstuvwxyz   ' 'abcdefghijklmnopqrstuvwxyz     ";
+        private static string SIMPLIFY       = "          \n                                     0123456789      @abcdefghijklmnopqrstuvwxyz      abcdefghijklmnopqrstuvwxyz     ";
         //                                       0SSEEEAabtnvfrSSDDDDDNSECESeFGRU !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ 
         private static Encoding ISO88598 = Encoding.GetEncoding("ISO-8859-8");
         private static Encoding UTF8 = Encoding.UTF8;
-        private static Regex MULTI_SPACE_REGEX = new Regex(" +", RegexOptions.Compiled);
-        private static Regex MULTI_ENTER_REGEX = new Regex(" ?\n ?", RegexOptions.Compiled);
 
         /// <summary>
         /// Displays the ACII characters in a string
@@ -135,8 +133,6 @@ namespace TeDotAd
         {
             str = RemoveByArray(str, DIACRITICS_EXT);
             str = RemoveByArray(str, SIMPLIFY, ' ');
-            str = MULTI_SPACE_REGEX.Replace(str, " ");
-            str = MULTI_ENTER_REGEX.Replace(str, "\n");
             
             return str;
         }

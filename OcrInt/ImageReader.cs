@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Tesseract;
 
-namespace TeDotAd
+namespace OcrInt
 {
     public class ImageReader : IDisposable
     {

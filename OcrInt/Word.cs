@@ -12,8 +12,17 @@ namespace OcrInt
     public class Word
     {
         public string Value;
+        public int Tag;
         public int LineNbr;
         public int WordNbr;
+        public bool CanGroup;
+
+        #region Helper
+
+
+        #endregion
+
+        #region MethodFactory
 
         private Word() { }
 
@@ -26,6 +35,8 @@ namespace OcrInt
         /// <returns></returns>
         public static Word Create(string value, int lineNbr, int wordNbr)
         {
+            var tag = Tag.Get(value);
+
             return new Word()
             {
                 Value = value,
@@ -34,32 +45,20 @@ namespace OcrInt
             };
         }
 
-        /// <summary>
-        /// Récupère les mots dans le texte
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public static Word[] GetWords(string text)
+        #endregion
+
+        #region Word Type
+
+        public class Number : Word
         {
-            var results = new List<Word>();
 
-            // Pour chaque ligne
-            string[] lines = text.Split('\n');
-            int linesNbr = lines.Length;
-            for (int i = 0; i < linesNbr; i++)
-            {
-                // Pour chaque mot dans la ligne
-                string[] words = lines[i].Split(' ');
-                int lineWordsNbr = words.Length;
-                for (int j = 0; j < lineWordsNbr; j++)
-                {
-                    // Ajoute le mot à la liste des mots
-                    var word = Create(words[i], i, j);
-                    results.Add(word);
-                }
-            }
-
-            return results.ToArray();
         }
+
+        public class GroupWord : Word
+        {
+
+        }
+
+        #endregion
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace TeDotAd.Tests
+namespace OcrInt.Tests
 {
     public class StringExtendsTest
     {
