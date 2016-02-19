@@ -12,18 +12,10 @@ namespace OcrInt
     public class Word
     {
         public string Value;
-        public int Tag;
+        public TagCollection Tags;
         public int LineNbr;
         public int WordNbr;
-        public bool CanGroup;
-
-        #region Helper
-
-
-        #endregion
-
-        #region MethodFactory
-
+        
         private Word() { }
 
         /// <summary>
@@ -35,30 +27,15 @@ namespace OcrInt
         /// <returns></returns>
         public static Word Create(string value, int lineNbr, int wordNbr)
         {
-            var tag = Tag.Get(value);
-
+            var tag = TagFlyweight.Default[value];
+            
             return new Word()
             {
                 Value = value,
                 LineNbr = lineNbr,
                 WordNbr = wordNbr,
+                Tags = new TagCollection() { { value, tag } },
             };
         }
-
-        #endregion
-
-        #region Word Type
-
-        public class Number : Word
-        {
-
-        }
-
-        public class GroupWord : Word
-        {
-
-        }
-
-        #endregion
     }
 }

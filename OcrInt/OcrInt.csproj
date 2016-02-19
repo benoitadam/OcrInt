@@ -81,14 +81,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Doc.cs" />
+    <Compile Include="Parser\Doc.cs" />
     <Compile Include="ImageReader.cs" />
-    <Compile Include="Product.cs" />
+    <Compile Include="Parser\AttributeCollection.cs" />
+    <Compile Include="Parser\AttributeType.cs" />
+    <Compile Include="Parser\Product.cs" />
+    <Compile Include="Parser\ProductCollection.cs" />
+    <Compile Include="Parser\ProductType.cs" />
+    <Compile Include="Parser\ProductTypeFlyweight.cs" />
+    <Compile Include="Parser\SynonymCollection.cs" />
+    <Compile Include="Parser\TagCollection.cs" />
+    <Compile Include="Parser\TagFlyweight.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtends.cs" />
-    <Compile Include="Tag.cs" />
-    <Compile Include="Word.cs" />
+    <Compile Include="Parser\Tag.cs" />
+    <Compile Include="ProgramData.cs" />
+    <Compile Include="Parser\Flyweight.cs" />
+    <Compile Include="Parser\Word.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

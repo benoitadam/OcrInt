@@ -12,7 +12,7 @@ namespace OcrInt
         private static Regex SPECIAL_CHAR = new Regex("[^0-9a-z\n ]+", RegexOptions.Compiled);
         private static Regex MULTI_SPACE_REGEX = new Regex(" +", RegexOptions.Compiled);
         private static Regex MULTI_ENTER_REGEX = new Regex(" ?\n ?", RegexOptions.Compiled);
-        private static Regex FORMAT_REGEX = new Regex("([0-9]+) ?[x /] ?([0-9]+)", RegexOptions.Compiled);
+        //private static Regex FORMAT_REGEX = new Regex("([0-9]+) ?[x /] ?([0-9]+)", RegexOptions.Compiled);
         private string Text;
         private Word[] Words;
 
@@ -20,19 +20,29 @@ namespace OcrInt
         {
         }
 
+        public void Compute()
+        {
+            // Nettoyage du texte
+            Text = CleanText(Text);
+
+            // Récupère les mots dans le texte
+            Words = ExtractWords(Text);
+        }
+
         /// <summary>
         /// Nettoyage du texte
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        private void CleanText()
+        public static string CleanText(string text)
         {
-            Text = Text.RemoveDiacriticsExt();
-            Text = Text.ToLowerInvariant();
-            Text = SPECIAL_CHAR.Replace(Text, " ");
-            Text = MULTI_SPACE_REGEX.Replace(Text, " ");
-            Text = MULTI_ENTER_REGEX.Replace(Text, "\n");
-            Text = FORMAT_REGEX.Replace(Text, "$1x$2");
+            text = text.RemoveDiacriticsExt();
+            text = text.ToLowerInvariant();
+            text = SPECIAL_CHAR.Replace(text, " ");
+            text = MULTI_SPACE_REGEX.Replace(text, " ");
+            text = MULTI_ENTER_REGEX.Replace(text, "\n");
+            //text = FORMAT_REGEX.Replace(text, "$1x$2");
+            return text;
         }
 
         /// <summary>
@@ -40,7 +50,7 @@ namespace OcrInt
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public void ExtractWords(string text)
+        public static Word[] ExtractWords(string text)
         {
             var results = new List<Word>();
 
@@ -60,7 +70,7 @@ namespace OcrInt
                 }
             }
 
-            Words = results.ToArray();
+            return results.ToArray();
         }
     }
 }
