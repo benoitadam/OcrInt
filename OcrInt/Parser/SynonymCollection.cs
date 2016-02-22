@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 namespace OcrInt
 {
-    public class SynonymCollection : Dictionary<ProductType, string>
+    public class SynonymCollection : Dictionary<ProductType, TagValue>
     {
     }
 }

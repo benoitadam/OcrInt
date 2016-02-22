@@ -84,7 +84,6 @@
     <Compile Include="Parser\Doc.cs" />
     <Compile Include="ImageReader.cs" />
     <Compile Include="Parser\AttributeCollection.cs" />
-    <Compile Include="Parser\AttributeType.cs" />
     <Compile Include="Parser\Product.cs" />
     <Compile Include="Parser\ProductCollection.cs" />
     <Compile Include="Parser\ProductType.cs" />
@@ -92,6 +91,7 @@
     <Compile Include="Parser\SynonymCollection.cs" />
     <Compile Include="Parser\TagCollection.cs" />
     <Compile Include="Parser\TagFlyweight.cs" />
+    <Compile Include="Parser\TagValue.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtends.cs" />

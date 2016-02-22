@@ -21,15 +21,11 @@ namespace OcrInt.Tests
         [Fact(DisplayName = "StringExtends.RemoveDiacriticsExt")]
         public void RemoveDiacriticsExt()
         {
-            var a = "$@¡¢£¤¥¦§".RemoveDiacriticsExt();
-            var b = "HeLlo^$".RemoveDiacriticsExt();
-            var c = "<html></html>".RemoveDiacriticsExt();
-            var d = "Héllô!".RemoveDiacriticsExt();
-
-            Assert.Equal(a, "$@|cEoY|S");
-            Assert.Equal(b, "HeLlo^$");
-            Assert.Equal(c, "<html></html>");
-            Assert.Equal(d, "Hello!");
+            Assert.Equal("$@¡¢£¤¥¦§".RemoveDiacriticsExt(), "$@¡cEoY¦S");
+            Assert.Equal("HeLlo^$".RemoveDiacriticsExt(), "HeLlo^$");
+            Assert.Equal("<html></html>".RemoveDiacriticsExt(), "<html></html>");
+            Assert.Equal("Héllô!".RemoveDiacriticsExt(), "Hello!");
+            Assert.Equal(string.Empty.RemoveDiacriticsExt(), string.Empty);
         }
 
         [Fact(DisplayName = "StringExtends.RemoveDiacritics")]
@@ -47,15 +43,49 @@ namespace OcrInt.Tests
         [Fact(DisplayName = "StringExtends.Simplify")]
         public void Simplify()
         {
-            var a = "$@¡¢£¤¥¦§".Simplify();
-            var b = "HeLlo^$".Simplify();
-            var c = "<html></html>".Simplify();
-            var d = "Héllô!".Simplify();
+            Assert.Equal("$@¡¢£¤¥¦§".Simplify(), "$@ ceoy s");
+            Assert.Equal("HeLlo^$".Simplify(), "hello'$");
+            Assert.Equal("<html></html>".Simplify(), "<html><|html>");
+            Assert.Equal("Héllô!".Simplify(), "hello|");
+            Assert.Equal("àé ~-(x)".Simplify(), "ae --(x)");
+            Assert.Equal("a\r\n   \r\nb\r\n  ".Simplify(), "a\n\nb\n");
+            Assert.Equal("  a    b   -  c  \r\n".Simplify(), "a b - c\n");
+            Assert.Equal(" 12,34 ".Simplify(), "12.34");
+            Assert.Equal("     ".Simplify(), "");
+            Assert.Equal("  a  ".Simplify(), "a");
+            Assert.Equal("  \r\n  ".Simplify(), "\n");
+            Assert.Equal("\r\n  ".Simplify(), "\n");
+            Assert.Equal("  \r\n".Simplify(), "\n");
+            Assert.Equal("".Simplify(), string.Empty);
+            Assert.Equal(((string)null).Simplify(), string.Empty);
+        }
 
-            Assert.Equal(a, "ceoy s");
-            Assert.Equal(b, "hello");
-            Assert.Equal(c, "html html");
-            Assert.Equal(d, "hello");
+        [Fact(DisplayName = "StringExtends.Simplify (Speed1)")]
+        public void SimplifySpeedBig()
+        {
+            var chars = new char[10000];
+            for (char ch = (char)0; ch < chars.Length; ch++)
+                chars[ch] = ch;
+            var text = new string(chars);
+            
+            for (int i = 0; i < 1000; i++)
+                text = text.Simplify();
+        }
+
+
+        [Fact(DisplayName = "StringExtends.Simplify (Speed2)")]
+        public void SimplifySpeedShort()
+        {
+            var chars = new char[1020];
+            for (char ch = (char)0; ch < chars.Length; ch++)
+                chars[ch] = ch;
+            
+            for (int i = 0; i < 1000; i++)
+            {
+                var text = new string(chars, i, 10);
+                for (int j = 0; j < 1000; j++)
+                    text.Simplify();
+            }
         }
     }
 }

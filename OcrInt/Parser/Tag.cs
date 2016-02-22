@@ -10,39 +10,33 @@ namespace OcrInt
     {
         public string Name { get; set; }
 
-        public AttributeCollection Attributes { get; set; }
+        public ProductAttributeCollection Attributes { get; set; }
 
         public SynonymCollection Synonyms { get; set; }
 
         public ProductCollection Products { get; set; }
 
-        public TagCollection Tags { get; set; }
+        public TagCollection CompoundTags { get; set; }
 
         public double? Number { get; set; }
 
         public bool IsInvert { get; set; }
 
+        /// <summary>
+        /// Nombre de mots contenus dans ce mot clé
+        /// "grand" => 1
+        /// "grand format" => 2
+        /// </summary>
+        public int WordCount { get; set; }
+
         public Tag(string name)
         {
             Name = name;
-            Attributes = new AttributeCollection();
+            Attributes = new ProductAttributeCollection();
             Synonyms = new SynonymCollection();
             Products = new ProductCollection();
-            Tags = new TagCollection();
+            CompoundTags = new TagCollection();
+            WordCount = 1;
         }
     }
 }
-
-
-
-
-
-
-
-//public SortedSet<TagGroup> Groups { get; set; }
-
-//public Dictionary<string, Tag> Links { get; set; }
-//public void AddLink(Tag tag)
-//{
-//    Links[tag.Name] = tag;
-//}

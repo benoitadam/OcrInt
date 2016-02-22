@@ -23,10 +23,10 @@ namespace OcrInt
             /* 128-143 */"\\PAD","\\HOP","\\BPH","\\NBH","\\IND","\\NEL","\\SSA","\\ESA","\\HTS","\\HTJ","\\VTS","\\PLD","\\PLU","\\RI","\\SS2","\\SS3",
             /* 144-151 */"\\DCS","\\PU1","\\PU2","\\STS","\\CCH","\\MW","\\SPA","\\EPA","\\SOS","\\SGCI","\\SCI","\\CSI","\\ST","\\OSC","\\PM","\\APC",
         };
-        private static string DIACRITICS     = "                                                                 ABCDEFGHIJKLMNOPQRSTUVWXYZ      abcdefghijklmnopqrstuvwxyz                                               a               o     AAAAAAACEEEEIIIIDNOOOOO OUUUUY  aaaaaaaceeeeiiii nooooo ouuuuy yAaAaAaCcCcCcCcDdDdEeEeEeEeEeGgGgGgGgHhHhIiIiIiIiIi  JjKk LlLlLl  LlNnNnNn   OoOoOoOoRrRrRrSsSsSsSsTtTtTtUuUuUuUuUuUuWwYyYZzZzZz b        D       Ff    I  l    OOo         t  TUu     z                      AaIiOoUuUuUuUuUu Aa    GgGgKkOoOo  j               ";
-        private static string DIACRITICS_EXT = "                                                                 ABCDEFGHIJKLMNOPQRSTUVWXYZ      abcdefghijklmnopqrstuvwxyz                                       cEoY S Oa   o o 23 uJ  1o     AAAAAAACEEEEIIIIDNOOOOOxOUUUUYpBaaaaaaaceeeeiiiionooooo ouuuuypyAaAaAaCcCcCcCcDdDdEeEeEeEeEeGgGgGgGgHhHhIiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnnNnOoOoOoOoRrRrRrSsSsSsSsTtTtTtUuUuUuUuUuUuWwYyYZzZzZzRbBbbbbCCcDDaaQEEEFfGVhlIKklAUNnOOoNnPpRSsELtTtTUuUUYyZz33332555p    DDdLLlNNnAaIiOoUuUuUuUuUuaAaAaAaGgGgKkOoOo33jDDdGgHPNnAaAaOo";
-        private static string SIMPLIFY       = "          \n                                     0123456789      @abcdefghijklmnopqrstuvwxyz      abcdefghijklmnopqrstuvwxyz     ";
-        //                                       0SSEEEAabtnvfrSSDDDDDNSECESeFGRU !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ 
+        public const string DIACRITICS     = "                                                                 ABCDEFGHIJKLMNOPQRSTUVWXYZ      abcdefghijklmnopqrstuvwxyz                                               a               o     AAAAAAACEEEEIIIIDNOOOOO OUUUUY  aaaaaaaceeeeiiii nooooo ouuuuy yAaAaAaCcCcCcCcDdDdEeEeEeEeEeGgGgGgGgHhHhIiIiIiIiIi  JjKk LlLlLl  LlNnNnNn   OoOoOoOoRrRrRrSsSsSsSsTtTtTtUuUuUuUuUuUuWwYyYZzZzZz b        D       Ff    I  l    OOo         t  TUu     z                      AaIiOoUuUuUuUuUu Aa    GgGgKkOoOo  j               ";
+        public const string DIACRITICS_EXT = "                                                                 ABCDEFGHIJKLMNOPQRSTUVWXYZ      abcdefghijklmnopqrstuvwxyz                                       cEoY S Oa   o o 23 uJ  1o     AAAAAAACEEEEIIIIDNOOOOOxOUUUUYpBaaaaaaaceeeeiiiionooooo ouuuuypyAaAaAaCcCcCcCcDdDdEeEeEeEeEeGgGgGgGgHhHhIiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnnNnOoOoOoOoRrRrRrSsSsSsSsTtTtTtUuUuUuUuUuUuWwYyYZzZzZzRbBbbbbCCcDDaaQEEEFfGVhlIKklAUNnOOoNnPpRSsELtTtTUuUUYyZz33332555p    DDdLLlNNnAaIiOoUuUuUuUuUuaAaAaAaGgGgKkOoOo33jDDdGgHPNnAaAaOo";
+        public const string SIMPLIFY       = "          \n                      |'#$%&'()++.-.|0123456789::<=>?@abcdefghijklmnopqrstuvwxyz(|)'-'abcdefghijklmnopqrstuvwxyz(|)- ";
+        public const string FIRST_127      = "0SSEEEAabtnvfrSSDDDDDNSECESeFGRU !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ";
         private static Encoding ISO88598 = Encoding.GetEncoding("ISO-8859-8");
         private static Encoding UTF8 = Encoding.UTF8;
 
@@ -56,7 +56,14 @@ namespace OcrInt
             return result;
         }
 
-        private static string RemoveByArray(string str, string array, char replace)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="array"></param>
+        /// <param name="replace"></param>
+        /// <returns></returns>
+        public static string Replace(string str, string array, char replace)
         {
             int length = str.Length, i = 0, max = array.Length;
             var chars = new char[length];
@@ -71,7 +78,13 @@ namespace OcrInt
             return new string(chars);
         }
 
-        private static string RemoveByArray(string str, string array)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static string Replace(string str, string array)
         {
             int length = str.Length, i = 0, max = array.Length;
             var chars = new char[length];
@@ -85,7 +98,7 @@ namespace OcrInt
 
             return new string(chars);
         }
-
+        
         /// <summary>
         /// Supprimer les accents des caractères accentués
         /// </summary>
@@ -104,7 +117,7 @@ namespace OcrInt
         /// <returns></returns>
         public static string RemoveDiacritics(this string str)
         {
-            str = RemoveByArray(str, DIACRITICS);
+            str = Replace(str, DIACRITICS);
             return str;
         }
 
@@ -120,7 +133,7 @@ namespace OcrInt
         /// <returns></returns>
         public static string RemoveDiacriticsExt(this string str)
         {
-            str = RemoveByArray(str, DIACRITICS_EXT);
+            str = Replace(str, DIACRITICS_EXT);
             return str;
         }
 
@@ -128,13 +141,69 @@ namespace OcrInt
         /// Supprimer les accents des caractères accentués
         /// </summary>
         /// <param name="str"></param>
+        /// <param name="replace"></param>
         /// <returns></returns>
-        public static string Simplify(this string str)
+        public static string Simplify(this string str,
+            string array1 = DIACRITICS_EXT, string array2 = SIMPLIFY)
         {
-            str = RemoveByArray(str, DIACRITICS_EXT);
-            str = RemoveByArray(str, SIMPLIFY, ' ');
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+
+            if (array1 == null || array1.Length == 0)
+                throw new ArgumentException("array1 is empty");
+
+            if (array2 == null || array2.Length == 0)
+                throw new ArgumentException("array2 is empty");
+
+            int length = str.Length,
+                i = 0,
+                j = 0,
+                max1 = array1.Length,
+                max2 = array2.Length;
             
-            return str;
+            var chars = new char[length + 1];
+            char ch;
+
+            for (; i < length; i++)
+            {
+                ch = str[i];
+                ch = ch >= max1 || array1[ch] == ' ' ? ch : array1[ch];
+                ch = ch >= max2 || array2[ch] == ' ' ? ' ' : array2[ch];
+
+                if(ch == ' ')
+                {
+                    // If the previous character was a space or character of newline
+                    if (chars[j] == ' ' || chars[j] == '\n')
+                        continue;
+                }
+                else if (ch == '\n')
+                {
+                    // If the previous character was a space
+                    if (chars[j] == ' ')
+                    {
+                        chars[j] = ch;
+                        continue;
+                    }
+                }
+
+                chars[++j] = ch;
+            }
+            
+            if (chars[j] == ' ')
+                j--;
+
+            if (chars[1] == ' ')
+            {
+                if (j < 2)
+                    return string.Empty;
+
+                return new string(chars, 2, j - 1);
+            }
+
+            if (j < 1)
+                return string.Empty;
+
+            return new string(chars, 1, j);
         }
     }
 }

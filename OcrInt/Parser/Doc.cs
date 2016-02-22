@@ -9,24 +9,41 @@ namespace OcrInt
 {
     public class Doc
     {
-        private static Regex SPECIAL_CHAR = new Regex("[^0-9a-z\n ]+", RegexOptions.Compiled);
-        private static Regex MULTI_SPACE_REGEX = new Regex(" +", RegexOptions.Compiled);
-        private static Regex MULTI_ENTER_REGEX = new Regex(" ?\n ?", RegexOptions.Compiled);
-        //private static Regex FORMAT_REGEX = new Regex("([0-9]+) ?[x /] ?([0-9]+)", RegexOptions.Compiled);
-        private string Text;
-        private Word[] Words;
+        public string Text;
+        public Word[] Words;
 
         public Doc(string text)
         {
+            Text = text;
         }
 
-        public void Compute()
+        /// <summary>
+        /// Analyse la chaine de caractère et calcule le résultat.
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public Doc Compute(TagFlyweight tags = null)
         {
-            // Nettoyage du texte
-            Text = CleanText(Text);
+            try
+            {
+                if (tags == null)
+                    tags = TagFlyweight.Default;
 
-            // Récupère les mots dans le texte
-            Words = ExtractWords(Text);
+                // Nettoyage du texte
+                Text = CleanText(Text);
+
+                // Récupère les mots dans le texte
+                Words = tags.ExtractWords(Text);
+
+                // Récupère les mots dans le texte
+                CompoundTags(Words);
+
+                return this;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error in Compute({tags})", ex);
+            }
         }
 
         /// <summary>
@@ -36,41 +53,64 @@ namespace OcrInt
         /// <returns></returns>
         public static string CleanText(string text)
         {
-            text = text.RemoveDiacriticsExt();
-            text = text.ToLowerInvariant();
-            text = SPECIAL_CHAR.Replace(text, " ");
-            text = MULTI_SPACE_REGEX.Replace(text, " ");
-            text = MULTI_ENTER_REGEX.Replace(text, "\n");
-            //text = FORMAT_REGEX.Replace(text, "$1x$2");
-            return text;
-        }
-
-        /// <summary>
-        /// Récupère les mots dans le texte
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public static Word[] ExtractWords(string text)
-        {
-            var results = new List<Word>();
-
-            // Pour chaque ligne
-            string[] lines = text.Split('\n');
-            int linesNbr = lines.Length;
-            for (int i = 0; i < linesNbr; i++)
+            try
             {
-                // Pour chaque mot dans la ligne
-                string[] words = lines[i].Split(' ');
-                int lineWordsNbr = words.Length;
-                for (int j = 0; j < lineWordsNbr; j++)
+                return text.Simplify();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error in CleanText", ex);
+            }
+        }
+        
+        /// <summary>
+        /// Recherche les groupes de mots
+        /// </summary>
+        /// <param name="words"></param>
+        public static void CompoundTags(Word[] words)
+        {
+            try
+            {
+                // Pour chaque mot
+                var wordsLength = words.Length;
+                for (int i = 0; i < wordsLength; i++)
                 {
-                    // Ajoute le mot à la liste des mots
-                    var word = Word.Create(words[i], i, j);
-                    results.Add(word);
+                    var word = words[i];
+                    var tag = words[i].Tag;
+
+                    // Pour chacun des mots composés possibles
+                    foreach (var compoundTag in tag.CompoundTags.Values)
+                    {
+                        int wordCount = compoundTag.WordCount;
+                        int lastWordIndex = i + wordCount;
+
+                        // Fin de la liste de mots
+                        if (lastWordIndex > wordsLength)
+                            continue;
+
+                        // Teste chacun des mots suivants
+                        int j = i + 1;
+                        for (; j < lastWordIndex; j++)
+                        {
+                            var word2 = words[j];
+                            var tag2 = word2.Tag;
+                            if (!tag2.CompoundTags.ContainsKey(compoundTag.Name))
+                                break;
+                        }
+
+                        // Si tous les mots contiennent le mot composé
+                        if (j == lastWordIndex)
+                        {
+                            // Ajoute le mot composé
+                            word.CompoundTags[compoundTag.Name] = compoundTag;
+                        }
+                    }
                 }
             }
-
-            return results.ToArray();
+            catch (Exception ex)
+            {
+                throw new Exception("Error in ComputeGroups", ex);
+            }
         }
     }
 }
