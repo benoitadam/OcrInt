@@ -10,6 +10,29 @@ namespace OcrInt
     public class TagFlyweight : Flyweight<string, Tag>
     {
         public static TagFlyweight Default = new TagFlyweight();
+        private static Action[] charToActions;
+        
+        enum Action : byte
+        {
+            None = 0,
+            Space = 1,
+            Line = 2,
+            Dot = 3,
+        }
+
+        static TagFlyweight()
+        {
+            charToActions = new Action[127];
+            charToActions[' '] = Action.Space;
+            charToActions['.'] = Action.Dot;
+            charToActions['!'] = Action.Dot;
+            charToActions['?'] = Action.Dot;
+            charToActions['-'] = Action.Dot;
+            charToActions['+'] = Action.Dot;
+            charToActions['|'] = Action.Dot;
+            charToActions[':'] = Action.Dot;
+            charToActions['\n'] = Action.Line;
+        }
 
         /// <summary>
         /// Crée le mot clé à la volée
@@ -52,27 +75,65 @@ namespace OcrInt
         {
             try
             {
-                var results = new List<Word>();
+                var words = new List<Word>();
+                int lineNbr = 1, wordNbr = 1, i = 0;
 
-                // Pour chaque ligne
-                string[] lines = text.Split('\n');
-                int linesNbr = lines.Length;
-                for (int i = 0; i < linesNbr; i++)
+                // Pour chaque caractére
+                var textLength = text.Length;
+                int start = 0;
+                for (; i < textLength; i++)
                 {
-                    // Pour chaque mot dans la ligne
-                    string[] words = lines[i].Split(' ');
-                    int lineWordsNbr = words.Length;
-                    for (int j = 0; j < lineWordsNbr; j++)
+                    var chr = text[i];
+
+                    // Nous utilisons un tableau pour les actions, car c’est plus rapide que des «if, else» imbriqués
+                    var action = chr > 127 ? Action.None : charToActions[chr];
+
+                    // Si le caractère n'est pas lié à une action de séparation de mot
+                    if (action == Action.None)
+                        continue;
+
+                    // On ajoute le mot précédent
+                    // Ajoute seulement les mots d’une taille supérieure à 0
+                    if (i - start > 0)
                     {
-                        // Ajoute le mot à la liste des mots
-                        var tagKey = words[j];
-                        var tag = this[tagKey];
-                        var word = Word.Create(words[j], i, j, tag);
-                        results.Add(word);
+                        var key = text.Substring(start, i - start);
+                        var word = Word.Create(key, lineNbr, wordNbr, this[key]);
+                        words.Add(word);
+                        wordNbr++;
+                    }
+
+                    // Le mot suivant commence au caractère d’après.
+                    start = i + 1;
+
+                    // Caractère de séparation d'une ligne
+                    if (action == Action.Line)
+                    {
+                        // Changement de la ligne
+                        wordNbr = 1;
+                        lineNbr++;
+                        continue;
+                    }
+
+                    // Caractère de séparation des produits
+                    if (action == Action.Dot)
+                    {
+                        // Crée un petit mot pour les caractères de séparation
+                        var key = chr.ToString();
+                        var word = Word.Create(key, lineNbr, wordNbr, this[key]);
+                        words.Add(word);
+                        wordNbr++;
                     }
                 }
 
-                return results.ToArray();
+                // On ajoute le dernier mot
+                if (i - start > 0)
+                {
+                    var key = text.Substring(start, i - start);
+                    var word = Word.Create(key, lineNbr, wordNbr, this[key]);
+                    words.Add(word);
+                }
+
+                return words.ToArray();
             }
             catch(Exception ex)
             {

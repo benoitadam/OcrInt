@@ -6,13 +6,46 @@ using System.Threading.Tasks;
 
 namespace OcrInt
 {
-    public class ProductType
+    public struct ProductType
     {
-        public int Id { get; set; }
+        public int Id;
         
         public ProductType(int id)
         {
             Id = id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (obj is ProductType) && Equals(obj);
+        }
+
+        public bool Equals(ProductType obj)
+        {
+            return Id.Equals(obj.Id);
+        }
+        
+        /// <summary>
+        /// Implicit TagValue to string conversion operator
+        /// </summary>
+        /// <param name="value"></param>
+        public static implicit operator int(ProductType value)
+        {
+            return value.Id;
+        }
+
+        /// <summary>
+        /// Explicit string to TagValue conversion operator
+        /// </summary>
+        /// <param name="value"></param>
+        public static implicit operator ProductType(int value)
+        {
+            return new ProductType(value);
         }
     }
 }

@@ -8,19 +8,37 @@ namespace OcrInt
 {
     public class Tag
     {
+        private TagValue? max = null;
+
         public string Name { get; set; }
 
         public ProductAttributeCollection Attributes { get; set; }
+        
+        public Dictionary<ProductType, TagValue> Products { get; set; }
 
-        public SynonymCollection Synonyms { get; set; }
+        /// <summary>
+        /// Les mots clés composés de plusieurs mots
+        /// </summary>
+        public Dictionary<string, Tag> CompoundTags { get; set; }
 
-        public ProductCollection Products { get; set; }
+        /// <summary>
+        /// Si le mot clé peut être un nombre
+        /// </summary>
+        public TagValue Number { get; set; }
 
-        public TagCollection CompoundTags { get; set; }
+        /// <summary>
+        /// Le mot clé avec le plus gros score
+        /// </summary>
+        public TagValue Max
+        {
+            get
+            {
+                if (max.HasValue)
+                {
 
-        public double? Number { get; set; }
-
-        public bool IsInvert { get; set; }
+                }
+            }
+        }
 
         /// <summary>
         /// Nombre de mots contenus dans ce mot clé
@@ -29,13 +47,17 @@ namespace OcrInt
         /// </summary>
         public int WordCount { get; set; }
 
+        /// <summary>
+        /// Si le tag peut être un mot inversé (ex: "sans")
+        /// </summary>
+        public bool IsInvert;
+
         public Tag(string name)
         {
             Name = name;
             Attributes = new ProductAttributeCollection();
-            Synonyms = new SynonymCollection();
-            Products = new ProductCollection();
-            CompoundTags = new TagCollection();
+            Products = new Dictionary<ProductType, TagValue>();
+            CompoundTags = new Dictionary<string, Tag>();
             WordCount = 1;
         }
     }

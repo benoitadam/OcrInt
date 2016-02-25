@@ -19,11 +19,11 @@ namespace OcrInt
         /// <summary>
         /// Groupe de mots clés pour les mots composés
         /// </summary>
-        public TagCollection CompoundTags;
+        public Dictionary<string, Tag> CompoundTags;
 
         private Word()
         {
-            CompoundTags = new TagCollection();
+            CompoundTags = new Dictionary<string, Tag>();
         }
 
         /// <summary>

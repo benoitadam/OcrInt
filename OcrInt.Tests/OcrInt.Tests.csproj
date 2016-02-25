@@ -83,10 +83,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Doc.cs" />
     <Compile Include="ImageReaderTest.cs" />
-    <Compile Include="ParserTest.cs" />
+    <Compile Include="Data.cs" />
+    <Compile Include="Words.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringExtendsTest.cs" />
+    <Compile Include="String.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

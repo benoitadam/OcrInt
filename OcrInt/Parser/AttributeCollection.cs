@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 namespace OcrInt
 {
-    public class ProductAttributeCollection : Dictionary<int, ProductAttributeCollection.AttributeCollection>
+    public class ProductAttributeCollection : Dictionary<int, Dictionary<string, TagValue>>
     {
         public TagValue this[ProductType productType, string attributeTypeName]
         {
@@ -13,15 +13,11 @@ namespace OcrInt
             }
             set
             {
-                AttributeCollection coll;
+                Dictionary<string, TagValue> coll;
                 if(!this.TryGetValue(productType.Id, out coll))
-                    this[productType.Id] = coll = new AttributeCollection();
+                    this[productType.Id] = coll = new Dictionary<string, TagValue>();
                 coll[attributeTypeName] = value;
             }
-        }
-
-        public class AttributeCollection : Dictionary<string, TagValue>
-        {
         }
     }
 }

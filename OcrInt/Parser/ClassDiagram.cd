@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="OcrInt.ProductAttributeCollection">
+    <Position X="20.75" Y="4.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Parser\AttributeCollection.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="this[OcrInt.ProductType, System.String]" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OcrInt.ExtractedProduct">
+    <Position X="29" Y="11" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAQAACAAAAAA=</HashCode>
+      <FileName>Parser\ExtractedProduct.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OcrInt.Flyweight&lt;TKey, TValue&gt;">
+    <Position X="26.75" Y="4.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAABACAAAAAAAAAAAAEAAAABAAAAAAAA=</HashCode>
+      <FileName>Parser\Flyweight.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OcrInt.ProductTypeFlyweight">
+    <Position X="24.75" Y="7.25" Width="2" />
+    <InheritanceLine Type="OcrInt.Flyweight&lt;TKey, TValue&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="28" Y="6.641" />
+        <Point X="28" Y="6.875" />
+        <Point X="25.75" Y="6.875" />
+        <Point X="25.75" Y="7.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Parser\ProductTypeFlyweight.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Default" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OcrInt.Tag">
+    <Position X="20.75" Y="6.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAABAAAAAAAEAAAAQQEAAAAgAAAAAABAAAAAQ=</HashCode>
+      <FileName>Parser\Tag.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="max" />
+      <Property Name="Attributes" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OcrInt.TagFlyweight">
+    <Position X="29" Y="7.25" Width="2" />
+    <NestedTypes>
+      <Enum Name="OcrInt.TagFlyweight.Action" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Parser\TagFlyweight.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAIAAAAAAAAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>Parser\TagFlyweight.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Default" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OcrInt.Word">
+    <Position X="17.25" Y="10" Width="1.5" />
+    <AssociationLine Name="CompoundTags" Type="OcrInt.Tag" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.562" Y="10" />
+        <Point X="17.562" Y="9.625" />
+        <Point X="20.938" Y="9.625" />
+        <Point X="20.938" Y="9.218" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Tag" Type="OcrInt.Tag" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.75" Y="10.125" />
+        <Point X="21.188" Y="10.125" />
+        <Point X="21.188" Y="9.218" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.598" Y="0.11" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAEAAkAAAAEgAAAAAAA=</HashCode>
+      <FileName>Parser\Word.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Tag" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="CompoundTags" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="OcrInt.Doc">
+    <Position X="21.5" Y="10" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>CEAAAAAAAAIAAAAAAAAAAAAAAAAAAgAAAAAACAAgAAE=</HashCode>
+      <FileName>Parser\Doc.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="ExtractedProducts" />
+      <Field Name="Words" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Struct Name="OcrInt.ProductType">
+    <Position X="24.75" Y="9.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAgCAAAAAAAAAAAAgAAAAAAAAAAAAIAAAABAAAAAAAA=</HashCode>
+      <FileName>Parser\ProductType.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="OcrInt.TagValue">
+    <Position X="16" Y="4.25" Width="3.75" />
+    <AssociationLine Name="Empty" Type="OcrInt.TagValue" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="16.375" Y="8.949" />
+        <Point X="16.375" Y="9.199" />
+        <Point X="17.375" Y="9.199" />
+        <Point X="17.375" Y="8.949" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AABQIAAAIAAAAAgAgEKAJAAAEAAAAMAAAAAwIAAAAAA=</HashCode>
+      <FileName>Parser\TagValue.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Empty" />
+    </ShowAsAssociation>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

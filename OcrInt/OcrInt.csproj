@@ -84,12 +84,9 @@
     <Compile Include="Parser\Doc.cs" />
     <Compile Include="ImageReader.cs" />
     <Compile Include="Parser\AttributeCollection.cs" />
-    <Compile Include="Parser\Product.cs" />
-    <Compile Include="Parser\ProductCollection.cs" />
+    <Compile Include="Parser\ExtractedProduct.cs" />
     <Compile Include="Parser\ProductType.cs" />
     <Compile Include="Parser\ProductTypeFlyweight.cs" />
-    <Compile Include="Parser\SynonymCollection.cs" />
-    <Compile Include="Parser\TagCollection.cs" />
     <Compile Include="Parser\TagFlyweight.cs" />
     <Compile Include="Parser\TagValue.cs" />
     <Compile Include="Program.cs" />
@@ -102,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Parser\ClassDiagram.cd" />
     <None Include="tessdata\eng.cube.bigrams">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

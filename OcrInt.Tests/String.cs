@@ -8,9 +8,9 @@ using Xunit;
 
 namespace OcrInt.Tests
 {
-    public class StringExtendsTest
+    public class String
     {
-        [Fact(DisplayName = "StringExtends.ShowAscii")]
+        [Fact]
         public void ShowAscii()
         {
             Assert.Equal("l1\\r\\nl2\\0", "l1\r\nl2\0".ShowAscii());
@@ -18,7 +18,7 @@ namespace OcrInt.Tests
             Assert.Equal("\\STX\\ETX", stx_etx.ShowAscii());
         }
         
-        [Fact(DisplayName = "StringExtends.RemoveDiacriticsExt")]
+        [Fact]
         public void RemoveDiacriticsExt()
         {
             Assert.Equal("$@¡¢£¤¥¦§".RemoveDiacriticsExt(), "$@¡cEoY¦S");
@@ -28,19 +28,19 @@ namespace OcrInt.Tests
             Assert.Equal(string.Empty.RemoveDiacriticsExt(), string.Empty);
         }
 
-        [Fact(DisplayName = "StringExtends.RemoveDiacritics")]
+        [Fact]
         public void RemoveDiacritics()
         {
             Assert.Equal("HeLlo! (you)!", "HéLlô! (you)!".RemoveDiacritics());
         }
 
-        [Fact(DisplayName = "StringExtends.RemoveDiacriticsIso")]
+        [Fact]
         public void RemoveDiacriticsIso()
         {
             Assert.Equal("HeLlo! (you)!", "HéLlô! (you)!".RemoveDiacriticsIso());
         }
 
-        [Fact(DisplayName = "StringExtends.Simplify")]
+        [Fact]
         public void Simplify()
         {
             Assert.Equal("$@¡¢£¤¥¦§".Simplify(), "$@ ceoy s");
@@ -60,7 +60,7 @@ namespace OcrInt.Tests
             Assert.Equal(((string)null).Simplify(), string.Empty);
         }
 
-        [Fact(DisplayName = "StringExtends.Simplify (Speed1)")]
+        [Fact]
         public void SimplifySpeedBig()
         {
             var chars = new char[10000];
@@ -71,9 +71,8 @@ namespace OcrInt.Tests
             for (int i = 0; i < 1000; i++)
                 text = text.Simplify();
         }
-
-
-        [Fact(DisplayName = "StringExtends.Simplify (Speed2)")]
+        
+        [Fact]
         public void SimplifySpeedShort()
         {
             var chars = new char[1020];
