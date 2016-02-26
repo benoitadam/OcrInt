@@ -10,6 +10,9 @@ namespace OcrInt
     /// </summary>
     public class TagFlyweight : Flyweight<string, Tag>
     {
+        private static Regex FORMAT_REGEX = new Regex(@"^([0-9\.]*[0-9]+)x([0-9\.]*[0-9]+)$", RegexOptions.Compiled);
+        private static Regex GRAMMAGE_REGEX = new Regex(@"^([0-9\.]*[0-9]+)([gm].*)$", RegexOptions.Compiled);
+        
         public static TagFlyweight Default = new TagFlyweight();
         private static Action[] charToActions;
         
@@ -33,6 +36,19 @@ namespace OcrInt
             charToActions['|'] = Action.Dot;
             charToActions[':'] = Action.Dot;
             charToActions['\n'] = Action.Line;
+        }
+
+        /// <summary>
+        /// Ajoute un nombre au format texte
+        /// un, deux, trois...
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void AddNumberText(string key, int value)
+        {
+            this[key].Number = new TagValue(value, TagValue.SIMPLE_NUMBER_SCORE);
+            key = key.Substring(0, 1).ToUpperInvariant() + key.Substring(1);
+            this[key].Number = new TagValue(value, TagValue.SIMPLE_NUMBER_SCORE);
         }
 
         /// <summary>
@@ -74,26 +90,33 @@ namespace OcrInt
         /// <param name="synonymesByProduct"></param>
         public void AddProducts(ProductType type, Dictionary<string, string> synonymesByProduct)
         {
-            // Pour chaque produit
-            foreach (var pair in synonymesByProduct)
+            try
             {
-                var product = pair.Key;
-                var simplify = pair.Value.Simplify();
-                var synonymes = simplify.Split(';');
-
-                // Pour chaque synonyme
-                foreach (var synonyme in synonymes)
+                // Pour chaque produit
+                foreach (var pair in synonymesByProduct)
                 {
-                    if (String.IsNullOrEmpty(synonyme))
-                        continue;
+                    var product = pair.Key;
+                    var simplify = pair.Value.Simplify();
+                    var synonymes = simplify.Split(';');
 
-                    // Pour chaque déclinaison du synonyme
-                    var declinations = GetDeclinations(synonyme.Trim());
-                    foreach (var declination in declinations)
+                    // Pour chaque synonyme
+                    foreach (var synonyme in synonymes)
                     {
-                        this[declination].Products[type] = product;
+                        if (String.IsNullOrEmpty(synonyme))
+                            continue;
+
+                        // Pour chaque déclinaison du synonyme
+                        var declinations = GetDeclinations(synonyme.Trim());
+                        foreach (var declination in declinations)
+                        {
+                            this[declination].Products[type] = product;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error in AddProducts({type}, ...)", ex);
             }
         }
 
@@ -104,78 +127,124 @@ namespace OcrInt
         /// <param name="synonymesByProduct"></param>
         public void AddAttributes(ProductType type, string attributeTypeName, Dictionary<string, string> synonymesByAttribute)
         {
-            // Pour chaque attribut
-            foreach (var pair in synonymesByAttribute)
+            try
             {
-                var product = pair.Key;
-                var simplify = pair.Value.Simplify();
-                var synonymes = simplify.Split(';');
-
-                // Pour chaque synonyme
-                foreach (var synonyme in synonymes)
+                // Pour chaque attribut
+                foreach (var pair in synonymesByAttribute)
                 {
-                    if (String.IsNullOrEmpty(synonyme))
-                        continue;
+                    var attribute = pair.Key;
 
-                    // Pour chaque déclinaison du synonyme
-                    var declinations = GetDeclinations(synonyme.Trim());
-                    foreach (var declination in declinations)
+                    // Gestion des attributs inversés
+                    var isInvert = attribute.StartsWith("!");
+                    if(isInvert)
+                        attribute = attribute.Substring(1);
+                    
+                    var synonymes = pair.Value.Split(';');
+
+                    // Pour chaque synonyme
+                    foreach (var synonyme in synonymes)
                     {
-                        this[declination].Products[type] = product;
+                        if (String.IsNullOrEmpty(synonyme))
+                            continue;
+
+                        // Pour chaque déclinaison du synonyme
+                        var declinations = GetDeclinations(synonyme.Simplify());
+                        foreach (var declination in declinations)
+                        {
+                            TagValue value = attribute;
+                            value.IsInvert = isInvert;
+
+                            this[declination].Attributes[type] = new ProductAttribute()
+                            {
+                                AttributeTypeName = attributeTypeName,
+                                ProductType = type,
+                                Value = value,
+                            };
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error in AddAttributes({type}, {attributeTypeName}, ...)", ex);
+            }
         }
-
-        private static Regex FORMAT_REGEX = new Regex(@"([0-9\.]*[0-9]+)x([0-9\.]*[0-9]+)", RegexOptions.Compiled);
 
         /// <summary>
         /// Récupère toutes les déclinaisons possibles d’un synonyme
         /// - "(de )texte(s)" -> "de texte" + "de textes" + "texte" + "textes"
-        /// - "Cahier" -> "Cahier" + "cahier"
-        /// - "TP" -> "TP"
         /// - "12.3x4.5" -> "12.3x4.5" + "12.3 x 4.5"
         /// </summary>
         /// <param name="s">le synonyme</param>
         /// <returns></returns>
         public IEnumerable<string> GetDeclinations(string s)
         {
-            var declinations = new List<string>();
-
-            if (string.IsNullOrEmpty(s))
-                return declinations;
-            
-            // (de )texte(s) -> de texte + de textes + texte + textes
-            var first = s.IndexOf('(');
-            if (first >= 0)
+            try
             {
-                var next = s.IndexOf(')');
-                if(next > 0)
-                {
-                    var s1 = s.Substring(0, first) + s.Substring(next + 1);
-                    var s2 = s.Substring(0, first) + s.Substring(first + 1, next - first - 1) + s.Substring(next + 1);
-                    declinations.AddRange(GetDeclinations(s1));
-                    declinations.AddRange(GetDeclinations(s2));
+                var declinations = new List<string>();
+
+                if (string.IsNullOrEmpty(s))
                     return declinations;
+
+                // (de )texte(s) -> de texte + de textes + texte + textes
+                var first = s.IndexOf('(');
+                if (first >= 0)
+                {
+                    var next = s.IndexOf(')');
+                    if (next > 0)
+                    {
+                        var s1 = s.Substring(0, first) + s.Substring(next + 1);
+                        var s2 = s.Substring(0, first) + s.Substring(first + 1, next - first - 1) + s.Substring(next + 1);
+                        declinations.AddRange(GetDeclinations(s1));
+                        declinations.AddRange(GetDeclinations(s2));
+                        return declinations;
+                    }
                 }
-            }
 
-            // 12.3x4.5 -> 12.3x4.5 + 12.3 x 4.5
-            if (FORMAT_REGEX.IsMatch(s))
-            {
+                // 12.3x4.5 -> 12.3x4.5 + 12.3 x 4.5
+                var formatMatch = FORMAT_REGEX.Match(s);
+                if (formatMatch.Success)
+                    declinations.Add(FORMAT_REGEX.Replace(s, "$1 x $2"));
+
+                var grammageMatch = GRAMMAGE_REGEX.Match(s);
+                if (grammageMatch.Success)
+                {
+                    var grammage = grammageMatch.Groups[1].Value;
+                    var grammageUnite = grammageMatch.Groups[2].Value;
+
+                    if (grammageUnite == "g")
+                    {
+                        //80; 80g; 80gr; 80 g; 80 gr
+                        declinations.Add(grammage);
+                        declinations.Add($"{grammage}g");
+                        declinations.Add($"{grammage} g");
+                        declinations.Add($"{grammage}gr");
+                        declinations.Add($"{grammage} gr");
+                    }
+                    else if (grammageUnite == "g/m²".Simplify())
+                    {
+                        //80g/m²; 80 g/m²; 80gr/m²; 80 gr/m²
+                        declinations.Add($"{grammage}g/m²".Simplify());
+                        declinations.Add($"{grammage} g/m²".Simplify());
+                        declinations.Add($"{grammage}gr/m²".Simplify());
+                        declinations.Add($"{grammage} gr/m²".Simplify());
+                    }
+                    else if (grammageUnite == "mm")
+                    {
+                        //80mm; 80 mm
+                        declinations.Add($"{grammage}mm");
+                        declinations.Add($"{grammage} mm");
+                    }
+                }
+
                 declinations.Add(s);
-                declinations.Add(FORMAT_REGEX.Replace(s, "$1 x $2"));
+
+                return declinations;
             }
-
-            // Cahier -> Cahier + cahier
-            // TP -> TP
-            var firstLower = s.Substring(0, 1).ToLowerInvariant() + s.Substring(1);
-            if (firstLower != s && s != s.ToLowerInvariant())
-                declinations.Add(firstLower);
-
-            declinations.Add(s);
-
-            return declinations;
+            catch (Exception ex)
+            {
+                throw new Exception($"Error in GetDeclinations({s})", ex);
+            }
         }
 
         /// <summary>
