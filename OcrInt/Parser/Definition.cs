@@ -110,12 +110,12 @@ namespace OcrInt
             // Si la définition ne contient pas de mot clé de produit
             // Et forcément la première phrase doit contenir un produit
             if (products.Count == 0)
-                return false;
+                return true;
 
             //var lastAttributesScore = lastDefinition.GetProducts();
             //var attributes = GetAttributeScores();
             
-            return true;
+            return false;
         }
 
         /// <summary>

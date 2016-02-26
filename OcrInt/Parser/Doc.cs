@@ -153,9 +153,9 @@ namespace OcrInt
                     if (wordCount > 1)
                     {
                         // On ajoute tous les mots sans faire de traitement
-                        i += wordCount - 1;
                         for (int j = 0; j < wordCount; j++)
-                            current.Words.Add(word);
+                            current.Words.Add(words[i + j]);
+                        i += wordCount - 1;
                         continue;
                     }
 
@@ -164,17 +164,20 @@ namespace OcrInt
                     if (word.Tag.IsSeparator || !word.Tag.Number.IsEmpty)
                     {
                         // Si la phrase courante est la suite de la phrase précédente
-                        if (current.IsFollowing(lastDefinition))
+                        if (current.Words.Count > 0)
                         {
-                            lastDefinition.Add(current);
-                            current = new Definition();
-                        }
-                        else
-                        {
-                            // Sinon il s’agit d’une nouvelle définition de produit.
-                            definitions.Add(current);
-                            lastDefinition = current;
-                            current = new Definition();
+                            if (current.IsFollowing(lastDefinition))
+                            {
+                                lastDefinition.Add(current);
+                                current = new Definition();
+                            }
+                            else
+                            {
+                                // Sinon il s’agit d’une nouvelle définition de produit.
+                                definitions.Add(current);
+                                lastDefinition = current;
+                                current = new Definition();
+                            }
                         }
 
                         // Pour un nombre

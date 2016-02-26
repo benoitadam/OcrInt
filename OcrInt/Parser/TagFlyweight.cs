@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace OcrInt
 {
@@ -65,7 +66,118 @@ namespace OcrInt
                 throw new Exception($"Error in Create({key})", ex);
             }
         }
-        
+
+        /// <summary>
+        /// Ajout des produits dans le dictionnaire de mot clé
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="synonymesByProduct"></param>
+        public void AddProducts(ProductType type, Dictionary<string, string> synonymesByProduct)
+        {
+            // Pour chaque produit
+            foreach (var pair in synonymesByProduct)
+            {
+                var product = pair.Key;
+                var simplify = pair.Value.Simplify();
+                var synonymes = simplify.Split(';');
+
+                // Pour chaque synonyme
+                foreach (var synonyme in synonymes)
+                {
+                    if (String.IsNullOrEmpty(synonyme))
+                        continue;
+
+                    // Pour chaque déclinaison du synonyme
+                    var declinations = GetDeclinations(synonyme.Trim());
+                    foreach (var declination in declinations)
+                    {
+                        this[declination].Products[type] = product;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ajout des attributs dans le dictionnaire de mot clé
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="synonymesByProduct"></param>
+        public void AddAttributes(ProductType type, string attributeTypeName, Dictionary<string, string> synonymesByAttribute)
+        {
+            // Pour chaque attribut
+            foreach (var pair in synonymesByAttribute)
+            {
+                var product = pair.Key;
+                var simplify = pair.Value.Simplify();
+                var synonymes = simplify.Split(';');
+
+                // Pour chaque synonyme
+                foreach (var synonyme in synonymes)
+                {
+                    if (String.IsNullOrEmpty(synonyme))
+                        continue;
+
+                    // Pour chaque déclinaison du synonyme
+                    var declinations = GetDeclinations(synonyme.Trim());
+                    foreach (var declination in declinations)
+                    {
+                        this[declination].Products[type] = product;
+                    }
+                }
+            }
+        }
+
+        private static Regex FORMAT_REGEX = new Regex(@"([0-9\.]*[0-9]+)x([0-9\.]*[0-9]+)", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Récupère toutes les déclinaisons possibles d’un synonyme
+        /// - "(de )texte(s)" -> "de texte" + "de textes" + "texte" + "textes"
+        /// - "Cahier" -> "Cahier" + "cahier"
+        /// - "TP" -> "TP"
+        /// - "12.3x4.5" -> "12.3x4.5" + "12.3 x 4.5"
+        /// </summary>
+        /// <param name="s">le synonyme</param>
+        /// <returns></returns>
+        public IEnumerable<string> GetDeclinations(string s)
+        {
+            var declinations = new List<string>();
+
+            if (string.IsNullOrEmpty(s))
+                return declinations;
+            
+            // (de )texte(s) -> de texte + de textes + texte + textes
+            var first = s.IndexOf('(');
+            if (first >= 0)
+            {
+                var next = s.IndexOf(')');
+                if(next > 0)
+                {
+                    var s1 = s.Substring(0, first) + s.Substring(next + 1);
+                    var s2 = s.Substring(0, first) + s.Substring(first + 1, next - first - 1) + s.Substring(next + 1);
+                    declinations.AddRange(GetDeclinations(s1));
+                    declinations.AddRange(GetDeclinations(s2));
+                    return declinations;
+                }
+            }
+
+            // 12.3x4.5 -> 12.3x4.5 + 12.3 x 4.5
+            if (FORMAT_REGEX.IsMatch(s))
+            {
+                declinations.Add(s);
+                declinations.Add(FORMAT_REGEX.Replace(s, "$1 x $2"));
+            }
+
+            // Cahier -> Cahier + cahier
+            // TP -> TP
+            var firstLower = s.Substring(0, 1).ToLowerInvariant() + s.Substring(1);
+            if (firstLower != s && s != s.ToLowerInvariant())
+                declinations.Add(firstLower);
+
+            declinations.Add(s);
+
+            return declinations;
+        }
+
         /// <summary>
         /// Récupère les mots dans le texte
         /// </summary>

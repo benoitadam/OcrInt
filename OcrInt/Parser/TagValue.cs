@@ -26,7 +26,7 @@ namespace OcrInt
         /// <summary>
         /// Si le mot clé est vide ou indéfini
         /// </summary>
-        public bool IsEmpty { get { return Value != null; } }
+        public bool IsEmpty { get { return Value == null; } }
 
         /// <summary>
         /// Si le mot clé est un nombre
