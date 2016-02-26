@@ -22,7 +22,7 @@ namespace OcrInt
 
         public override bool Equals(object obj)
         {
-            return (obj is ProductType) && Equals(obj);
+            return (obj is ProductType) && Equals((ProductType)obj);
         }
 
         public bool Equals(ProductType obj)
@@ -46,6 +46,15 @@ namespace OcrInt
         public static implicit operator ProductType(int value)
         {
             return new ProductType(value);
+        }
+
+        /// <summary>
+        /// Affiche le texte pour le débogage
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Id.ToString();
         }
     }
 }

@@ -143,5 +143,14 @@ namespace OcrInt
         {
             return new TagValue(value, NUMBER_SCORE);
         }
+
+        /// <summary>
+        /// Affiche le texte pour le débogage
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 }

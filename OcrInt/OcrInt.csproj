@@ -84,7 +84,8 @@
     <Compile Include="Parser\Doc.cs" />
     <Compile Include="ImageReader.cs" />
     <Compile Include="Parser\AttributeCollection.cs" />
-    <Compile Include="Parser\ExtractedProduct.cs" />
+    <Compile Include="Parser\Definition.cs" />
+    <Compile Include="Parser\ProductAttribute.cs" />
     <Compile Include="Parser\ProductType.cs" />
     <Compile Include="Parser\ProductTypeFlyweight.cs" />
     <Compile Include="Parser\TagFlyweight.cs" />

@@ -36,7 +36,19 @@ namespace OcrInt.Tests
             }
 
             #endregion
-            
+
+            #region ADD SEPARATOR TAGS
+
+            tags["-"].IsSeparator = true;
+            tags["."].IsSeparator = true;
+            tags["\n"].IsSeparator = true;
+            tags["|"].IsSeparator = true;
+            tags["!"].IsSeparator = true;
+            tags["?"].IsSeparator = true;
+            tags[":"].IsSeparator = true;
+
+            #endregion
+
             tags["cahier"].Products[1] = "Cahier";
             tags["cahiers"].Products[1] = "Cahier";
             tags["grand"].Attributes[1, "format"] = "grand";

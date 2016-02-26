@@ -49,30 +49,42 @@ namespace OcrInt.Tests
 
                 // Test CompoundTags
                 Assert.NotNull(doc.Words[2].CompoundTags["grand format"]);
-                Assert.NotNull(doc.Words[2].CompoundTags["grand format"].Attributes[1, "format"]);
+                Assert.Equal(doc.Words[2].CompoundTags["grand format"].Attributes[1].AttributeTypeName, "format");
                 Assert.NotNull(doc.Words[4].CompoundTags["24 x 32"]);
-                Assert.NotNull(doc.Words[4].CompoundTags["24 x 32"].Attributes[1, "format"]);
+                Assert.Equal(doc.Words[4].CompoundTags["24 x 32"].Attributes[1].AttributeTypeName, "format");
                 Assert.NotNull(doc.Words[12].CompoundTags["pochette de papier"]);
-                Assert.NotNull(doc.Words[12].CompoundTags["pochette de papier"].Products[1]);
+                Assert.Equal(doc.Words[12].CompoundTags["pochette de papier"].Products[3].Value, "Pochette Papier");
                 Assert.NotNull(doc.Words[16].CompoundTags["50 feuilles"]);
-                Assert.NotNull(doc.Words[16].CompoundTags["50 feuilles"].Attributes[3, "nb de feuilles"]);
+                Assert.Equal(doc.Words[16].CompoundTags["50 feuilles"].Attributes[3].AttributeTypeName, "nb de feuilles");
             }
         }
 
         [Fact]
-        public void InterpretedProducts()
+        public void Definitions()
         {
             var tags = Data.GetTagFlyweight();
+            
+            var doc1 = new OcrInt.Doc(@"
+                2 cahiers grand format 24x32 - grands carreaux - 96 pages.
+                1 compas de qualité ouverture 20 cm - 1 pochette de papier calque 50 feuilles").Compute(tags);
 
-            var text = @"2 cahiers grand format 24x32 - grands carreaux - 96 pages.
-1 compas de qualité ouverture 20 cm - 1 pochette de papier calque 50 feuilles";
+            var doc2 = new OcrInt.Doc(@"
+                2 cahiers grand
+                format 24x32
+                grands carreaux
+                96 pages.
+                1 compas de qualité
+                ouverture 20 cm
+                1 pochette de papier
+                calque 50 feuilles").Compute(tags);
+            
+            Assert.Equal(doc1.Definitions[0].ToString(), "2 cahiers grand format 24x32 grands carreaux 96 pages");
+            Assert.Equal(doc1.Definitions[1].ToString(), "1 compas de qualité ouverture 20 cm");
+            Assert.Equal(doc1.Definitions[2].ToString(), "1 pochette de papier calque 50 feuilles");
 
-            var doc = new OcrInt.Doc(text).Compute(tags);
-
-            // Test CompoundTags
-            Assert.Equal(doc.ExtractedProducts[0].Text, "2 cahiers grand format 24x32 - grands carreaux - 96 pages");
-            Assert.Equal(doc.ExtractedProducts[1].Text, "1 compas de qualité ouverture 20 cm");
-            Assert.Equal(doc.ExtractedProducts[2].Text, "1 pochette de papier calque 50 feuilles");
+            Assert.Equal(doc2.Definitions[0].ToString(), "2 cahiers grand format 24x32 grands carreaux 96 pages");
+            Assert.Equal(doc2.Definitions[1].ToString(), "1 compas de qualité ouverture 20 cm");
+            Assert.Equal(doc2.Definitions[2].ToString(), "1 pochette de papier calque 50 feuilles");
         }
     }
 }

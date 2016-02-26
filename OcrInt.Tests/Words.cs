@@ -16,15 +16,15 @@ namespace OcrInt.Tests
             var tags = new TagFlyweight();
             var words = tags.ExtractWords("a b c\nd e f\ng h i");
             
-            Assert.Equal(words[0].WordNbr, 0);
-            Assert.Equal(words[1].WordNbr, 1);
-            Assert.Equal(words[2].WordNbr, 2);
-            Assert.Equal(words[3].WordNbr, 0);
-            Assert.Equal(words[4].WordNbr, 1);
-            Assert.Equal(words[5].WordNbr, 2);
-            Assert.Equal(words[6].WordNbr, 0);
-            Assert.Equal(words[7].WordNbr, 1);
-            Assert.Equal(words[8].WordNbr, 2);
+            Assert.Equal(words[0].WordNbr, 1);
+            Assert.Equal(words[1].WordNbr, 2);
+            Assert.Equal(words[2].WordNbr, 3);
+            Assert.Equal(words[3].WordNbr, 1);
+            Assert.Equal(words[4].WordNbr, 2);
+            Assert.Equal(words[5].WordNbr, 3);
+            Assert.Equal(words[6].WordNbr, 1);
+            Assert.Equal(words[7].WordNbr, 2);
+            Assert.Equal(words[8].WordNbr, 3);
         }
 
         [Fact]
@@ -33,15 +33,15 @@ namespace OcrInt.Tests
             var tags = new TagFlyweight();
             var words = tags.ExtractWords("a b c\nd e f\ng h i");
             
-            Assert.Equal(words[0].LineNbr, 0);
-            Assert.Equal(words[1].LineNbr, 0);
-            Assert.Equal(words[2].LineNbr, 0);
-            Assert.Equal(words[3].LineNbr, 1);
-            Assert.Equal(words[4].LineNbr, 1);
-            Assert.Equal(words[5].LineNbr, 1);
-            Assert.Equal(words[6].LineNbr, 2);
-            Assert.Equal(words[7].LineNbr, 2);
-            Assert.Equal(words[8].LineNbr, 2);
+            Assert.Equal(words[0].LineNbr, 1);
+            Assert.Equal(words[1].LineNbr, 1);
+            Assert.Equal(words[2].LineNbr, 1);
+            Assert.Equal(words[3].LineNbr, 2);
+            Assert.Equal(words[4].LineNbr, 2);
+            Assert.Equal(words[5].LineNbr, 2);
+            Assert.Equal(words[6].LineNbr, 3);
+            Assert.Equal(words[7].LineNbr, 3);
+            Assert.Equal(words[8].LineNbr, 3);
         }
 
         [Fact]
@@ -85,7 +85,8 @@ namespace OcrInt.Tests
             Assert.Equal(words[2].Tag.Name, "cahier");
 
             Assert.Equal(words[0].Tag.Number, 2);
-            Assert.Equal(words[1].Tag.Attributes[p1, "format"], "_Grand_");
+            Assert.Equal(words[1].Tag.Attributes[p1].AttributeTypeName, "format");
+            Assert.Equal(words[1].Tag.Attributes[p1].Value, "_Grand_");
             Assert.Equal(words[2].Tag.Products[p1], "_Cahier_");
         }
     }

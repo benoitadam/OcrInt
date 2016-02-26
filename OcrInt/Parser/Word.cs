@@ -11,6 +11,7 @@ namespace OcrInt
     /// </summary>
     public class Word
     {
+        private Tag max;
         public string Value;
         public int LineNbr;
         public int WordNbr;
@@ -20,6 +21,37 @@ namespace OcrInt
         /// Groupe de mots clés pour les mots composés
         /// </summary>
         public Dictionary<string, Tag> CompoundTags;
+
+        /// <summary>
+        /// Récupère le score maximale
+        /// </summary>
+        public int MaxScore
+        {
+            get
+            {
+                return MaxTag.MaxScore;
+            }
+        }
+
+        /// <summary>
+        /// Récupère le mot clé avec le plus gros score
+        /// </summary>
+        public Tag MaxTag
+        {
+            get
+            {
+                if(max == null)
+                {
+                    max = Tag;
+
+                    // Les mots composés sont prioritaires
+                    foreach (var compoundTag in CompoundTags.Values)
+                        if(max.MaxScore <= compoundTag.MaxScore)
+                            max = compoundTag;
+                }
+                return max;
+            }
+        }
 
         private Word()
         {
@@ -43,6 +75,15 @@ namespace OcrInt
                 WordNbr = wordNbr,
                 Tag = tag,
             };
+        }
+        
+        /// <summary>
+        /// Affiche le texte pour le débogage
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Value;
         }
     }
 }

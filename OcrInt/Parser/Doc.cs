@@ -11,7 +11,7 @@ namespace OcrInt
     {
         public string Text;
         public Word[] Words;
-        public ExtractedProduct[] ExtractedProducts;
+        public Definition[] Definitions;
 
         public Doc(string text)
         {
@@ -43,7 +43,7 @@ namespace OcrInt
                 CompoundTags(Words);
 
                 // Extraction des différentes déclarations de produit
-                ExtractedProducts = ProductExtraction(Words);
+                Definitions = GetDefinitions(Words);
 
                 return this;
             }
@@ -130,85 +130,83 @@ namespace OcrInt
         /// Extraction des différentes déclarations de produit
         /// </summary>
         /// <param name="words"></param>
-        public static ExtractedProduct[] ProductExtraction(Word[] words)
+        public static Definition[] GetDefinitions(Word[] words)
         {
             try
             {
                 if (words == null)
                     throw new ArgumentNullException("words");
 
-                var extractedProducts = new List<ExtractedProduct>();
-                var extractedProduct = new ExtractedProduct();
-
                 // Algorithme de découpe des définitions de produit.
-
-                // Pour chaque texte entre 2 séparateurs (point, retour à la ligne, tiret...)
-                // On détecte la présence d’un nombre potentielle.
-                // Si le score du nombre potentiel est supérieur aux attributs possibles qui lui sont liés.
-                // Il s’agit très certainement d’une nouvelle définition de produit. 
-
+                Definition lastDefinition = null;
+                var current = new Definition();
+                var definitions = new List<Definition>();
                 var wordsLength = words.Length;
-                for (int i = 0; i < wordsLength; i++)
-                {
-                    //var word = words[i];
 
-                    //extractedProduct.Add(word);
-
-                    //if(word.Tag.Number.HasValue)
-                    //{
-                    //    var max = word.Tag.Max
-                    //    foreach (var )
-                    //    word.Tag.Number.Score
-                    //}
-                }
-
-
-
-
-
-
-
-                    // Pour chaque mot
-                    //var wordsLength = words.Length;
+                // Pour chaque mot
                 for (int i = 0; i < wordsLength; i++)
                 {
                     var word = words[i];
-                    var tag = words[i].Tag;
 
-                    // Pour chacun des mots composés possibles
-                    foreach (var compoundTag in tag.CompoundTags.Values)
+                    // Si le mot clé avec le plus gros score est un mot composé
+                    var wordCount = word.MaxTag.WordCount;
+                    if (wordCount > 1)
                     {
-                        int wordCount = compoundTag.WordCount;
-                        int lastWordIndex = i + wordCount;
-
-                        // Fin de la liste de mots
-                        if (lastWordIndex > wordsLength)
-                            continue;
-
-                        // Teste chacun des mots suivants
-                        int j = i + 1;
-                        for (; j < lastWordIndex; j++)
-                        {
-                            var word2 = words[j];
-                            var tag2 = word2.Tag;
-                            if (!tag2.CompoundTags.ContainsKey(compoundTag.Name))
-                                break;
-                        }
-
-                        // Si tous les mots contiennent le mot composé
-                        if (j == lastWordIndex)
-                        {
-                            // Ajoute le mot composé
-                            word.CompoundTags[compoundTag.Name] = compoundTag;
-                        }
+                        // On ajoute tous les mots sans faire de traitement
+                        i += wordCount - 1;
+                        for (int j = 0; j < wordCount; j++)
+                            current.Words.Add(word);
+                        continue;
                     }
+
+                    // Pour chaque texte entre 2 séparateurs (point, retour à la ligne, tiret...)
+                    // ou un nombre
+                    if (word.Tag.IsSeparator || !word.Tag.Number.IsEmpty)
+                    {
+                        // Si la phrase courante est la suite de la phrase précédente
+                        if (current.IsFollowing(lastDefinition))
+                        {
+                            lastDefinition.Add(current);
+                            current = new Definition();
+                        }
+                        else
+                        {
+                            // Sinon il s’agit d’une nouvelle définition de produit.
+                            definitions.Add(current);
+                            lastDefinition = current;
+                            current = new Definition();
+                        }
+
+                        // Pour un nombre
+                        if (!word.Tag.Number.IsEmpty)
+                        {
+                            // Ajoute le nombre
+                            current.Words.Add(word);
+                        }
+
+                        continue;
+                    }
+
+                    // Ajoute le mot
+                    current.Words.Add(word);
                 }
 
-                return extractedProducts.ToArray();
+                // Si la phrase courante est la suite de la phrase précédente
+                if (current.IsFollowing(lastDefinition))
+                {
+                    lastDefinition.Add(current);
+                }
+                else
+                {
+                    // Sinon il s’agit d’une nouvelle définition de produit.
+                    definitions.Add(current);
+                }
+
+                return definitions.ToArray();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error in ProductExtraction", ex);
+                throw new Exception("Error in GetDefinitions", ex);
             }
         }
     }

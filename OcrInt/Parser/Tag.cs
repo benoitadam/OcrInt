@@ -8,7 +8,40 @@ namespace OcrInt
 {
     public class Tag
     {
-        private TagValue? max = null;
+        #region MAX
+
+        private TagValue max;
+
+        /// <summary>
+        /// Récupère la plus grosse valeur
+        /// </summary>
+        public TagValue Max
+        {
+            get
+            {
+                if (max.IsEmpty)
+                {
+                    foreach (var prod in Products.Values)
+                        if (prod.Score > max.Score)
+                            max = prod;
+
+                    foreach (var attr in Attributes.Values)
+                        if (attr.Value.Score > max.Score)
+                            max = attr.Value;
+
+                    if (Number.Score > max.Score)
+                        max = Number;
+                }
+                return max;
+            }
+        }
+
+        /// <summary>
+        /// Récupère la plus gros score
+        /// </summary>
+        public int MaxScore { get { return Max.Score; } }
+
+        #endregion
 
         public string Name { get; set; }
 
@@ -25,27 +58,18 @@ namespace OcrInt
         /// Si le mot clé peut être un nombre
         /// </summary>
         public TagValue Number { get; set; }
-
-        /// <summary>
-        /// Le mot clé avec le plus gros score
-        /// </summary>
-        public TagValue Max
-        {
-            get
-            {
-                if (max.HasValue)
-                {
-
-                }
-            }
-        }
-
+        
         /// <summary>
         /// Nombre de mots contenus dans ce mot clé
         /// "grand" => 1
         /// "grand format" => 2
         /// </summary>
         public int WordCount { get; set; }
+
+        /// <summary>
+        /// Si le mot clé est un séparateur de définition
+        /// </summary>
+        public bool IsSeparator { get; set; }
 
         /// <summary>
         /// Si le tag peut être un mot inversé (ex: "sans")
@@ -59,6 +83,15 @@ namespace OcrInt
             Products = new Dictionary<ProductType, TagValue>();
             CompoundTags = new Dictionary<string, Tag>();
             WordCount = 1;
+        }
+        
+        /// <summary>
+        /// Affiche le texte pour le débogage
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }
