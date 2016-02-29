@@ -12,11 +12,11 @@ namespace OcrInt
     /// </summary>
     public struct TagValue
     {
-        public const int PRODUCT_SCORE = 1500;
-        public const int ATTRIBUTE_SCORE = 1000;
-        public const int SIMPLE_NUMBER_SCORE = 1200;
-        public const int NUMBER_SCORE = 500;
-        public const int NUMBER_ERROR_SCORE = 100;
+    //    public const int PRODUCT_SCORE = 1500;
+    //    public const int ATTRIBUTE_SCORE = 1000;
+    //    public const int SIMPLE_NUMBER_SCORE = 1200;
+    //    public const int NUMBER_SCORE = 500;
+    //    public const int NUMBER_ERROR_SCORE = 100;
 
         /// <summary>
         /// Un mot clé est vide ou indéfini
@@ -59,7 +59,7 @@ namespace OcrInt
         /// <param name="value"></param>
         /// <param name="score"></param>
         /// <param name="isInvert"></param>
-        public TagValue(double value, int score, bool isInvert = false)
+        public TagValue(double value, int? score = null, bool isInvert = false)
             : this(value.ToString(CultureInfo.InvariantCulture), score, isInvert)
         {
             Number = value;
@@ -71,12 +71,28 @@ namespace OcrInt
         /// <param name="value"></param>
         /// <param name="score"></param>
         /// <param name="isInvert"></param>
-        public TagValue(string value, int score, bool isInvert = false)
+        public TagValue(string value, int? score = null, bool isInvert = false)
         {
             Number = double.MinValue;
             Value = string.IsNullOrEmpty(value) ? null : value;
-            Score = score;
+            Score = score ?? GetScore(value);
             IsInvert = isInvert;
+        }
+
+        /// <summary>
+        /// Calcule un score en fonction de la valeur du mot clé
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int GetScore(string value)
+        {
+            int nbSpace = 0, len = value.Length;
+
+            for (int i = 0; i < len; i++)
+                if (value[i] == ' ')
+                    nbSpace++;
+
+            return len * 10 + nbSpace * 20;
         }
 
         /// <summary>
@@ -123,7 +139,7 @@ namespace OcrInt
         /// <param name="value"></param>
         public static implicit operator TagValue(string value)
         {
-            return new TagValue(value, ATTRIBUTE_SCORE);
+            return new TagValue(value);
         }
 
         /// <summary>
@@ -141,7 +157,7 @@ namespace OcrInt
         /// <param name="value"></param>
         public static implicit operator TagValue(double value)
         {
-            return new TagValue(value, NUMBER_SCORE);
+            return new TagValue(value);
         }
 
         /// <summary>

@@ -49,9 +49,9 @@ RIEN 1 cahier de TP est fourni.
 
                 // Test CompoundTags
                 Assert.NotNull(doc.Words[2].CompoundTags["grand format"]);
-                Assert.Equal(doc.Words[2].CompoundTags["grand format"].Attributes[1].AttributeTypeName, "format");
+                Assert.Equal(doc.Words[2].CompoundTags["grand format"].Attributes[2].AttributeTypeName, "format");
                 Assert.NotNull(doc.Words[4].CompoundTags["24 x 32"]);
-                Assert.Equal(doc.Words[4].CompoundTags["24 x 32"].Attributes[1].AttributeTypeName, "format");
+                Assert.Equal(doc.Words[4].CompoundTags["24 x 32"].Attributes[2].AttributeTypeName, "format");
                 Assert.NotNull(doc.Words[12].CompoundTags["pochette de papier"]);
                 Assert.Equal(doc.Words[12].CompoundTags["pochette de papier"].Products[3].Value, "Pochette Papier");
                 Assert.NotNull(doc.Words[16].CompoundTags["50 feuilles"]);
@@ -92,11 +92,11 @@ RIEN 1 cahier de TP est fourni.
         {
             var tags = Data.GetTagFlyweight();
 
-            var doc = new OcrInt.Doc(@"
-                2 cahiers grand format 24x32 - grands carreaux - 96 pages.
-                1 compas de qualité ouverture 20 cm - 1 pochette de papier calque 50 feuilles").Compute(tags);
-
-
+            for (int i = 0; i < 100000; i++)
+            {
+                var doc = new OcrInt.Doc(tom).Compute(tags);
+                Assert.Equal(doc.Definitions.Length, 31);
+            }
         }
     }
 }

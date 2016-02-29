@@ -10,13 +10,13 @@ namespace OcrInt
     /// </summary>
     public class TagFlyweight : Flyweight<string, Tag>
     {
-        private static Regex FORMAT_REGEX = new Regex(@"^([0-9\.]*[0-9]+)x([0-9\.]*[0-9]+)$", RegexOptions.Compiled);
-        private static Regex GRAMMAGE_REGEX = new Regex(@"^([0-9\.]*[0-9]+)([gm].*)$", RegexOptions.Compiled);
+        private static Regex FORMAT_REGEX = new Regex(@"^([0-9\.]*[0-9]+) ?x ?([0-9\.]*[0-9]+) ?(m?)$", RegexOptions.Compiled);
+        private static Regex GRAMMAGE_REGEX = new Regex(@"^([0-9\.]*[0-9]+) ?([gm].*)$", RegexOptions.Compiled);
         
         public static TagFlyweight Default = new TagFlyweight();
-        private static Action[] charToActions;
-        
-        enum Action : byte
+        public static Action[] Char2Actions;
+
+        public enum Action : byte
         {
             None = 0,
             Space = 1,
@@ -26,16 +26,26 @@ namespace OcrInt
 
         static TagFlyweight()
         {
-            charToActions = new Action[127];
-            charToActions[' '] = Action.Space;
-            charToActions['.'] = Action.Dot;
-            charToActions['!'] = Action.Dot;
-            charToActions['?'] = Action.Dot;
-            charToActions['-'] = Action.Dot;
-            charToActions['+'] = Action.Dot;
-            charToActions['|'] = Action.Dot;
-            charToActions[':'] = Action.Dot;
-            charToActions['\n'] = Action.Line;
+            Char2Actions = new Action[127];
+            Char2Actions[' '] = Action.Space;
+            Char2Actions['.'] = Action.Dot;
+            Char2Actions['!'] = Action.Dot;
+            Char2Actions['?'] = Action.Dot;
+            Char2Actions['-'] = Action.Dot;
+            Char2Actions['+'] = Action.Dot;
+            Char2Actions['|'] = Action.Dot;
+            Char2Actions[':'] = Action.Dot;
+            Char2Actions['('] = Action.Dot;
+            Char2Actions[')'] = Action.Dot;
+            Char2Actions['<'] = Action.Dot;
+            Char2Actions['>'] = Action.Dot;
+            Char2Actions['#'] = Action.Dot;
+            Char2Actions['$'] = Action.Dot;
+            Char2Actions['%'] = Action.Dot;
+            Char2Actions['&'] = Action.Dot;
+            Char2Actions['@'] = Action.Dot;
+            //Char2Actions['\''] = Action.Dot;
+            Char2Actions['\n'] = Action.Line;
         }
 
         /// <summary>
@@ -46,9 +56,9 @@ namespace OcrInt
         /// <param name="value"></param>
         public void AddNumberText(string key, int value)
         {
-            this[key].Number = new TagValue(value, TagValue.SIMPLE_NUMBER_SCORE);
+            this[key].Number = value;
             key = key.Substring(0, 1).ToUpperInvariant() + key.Substring(1);
-            this[key].Number = new TagValue(value, TagValue.SIMPLE_NUMBER_SCORE);
+            this[key].Number = value;
         }
 
         /// <summary>
@@ -84,6 +94,16 @@ namespace OcrInt
         }
 
         /// <summary>
+        /// Ajout un produit dans le dictionnaire de mot clé
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="synonymesByProduct"></param>
+        public void AddProduct(ProductType type, string product, string synonymes)
+        {
+            AddProducts(type, new Dictionary<string, string> { { product, synonymes } });
+        }
+
+        /// <summary>
         /// Ajout des produits dans le dictionnaire de mot clé
         /// </summary>
         /// <param name="type"></param>
@@ -96,8 +116,7 @@ namespace OcrInt
                 foreach (var pair in synonymesByProduct)
                 {
                     var product = pair.Key;
-                    var simplify = pair.Value.Simplify();
-                    var synonymes = simplify.Split(';');
+                    var synonymes = pair.Value.Split(';');
 
                     // Pour chaque synonyme
                     foreach (var synonyme in synonymes)
@@ -106,7 +125,7 @@ namespace OcrInt
                             continue;
 
                         // Pour chaque déclinaison du synonyme
-                        var declinations = GetDeclinations(synonyme.Trim());
+                        var declinations = GetDeclinations(synonyme.Simplify());
                         foreach (var declination in declinations)
                         {
                             this[declination].Products[type] = product;
@@ -118,6 +137,16 @@ namespace OcrInt
             {
                 throw new Exception($"Error in AddProducts({type}, ...)", ex);
             }
+        }
+
+        /// <summary>
+        /// Ajout un attribut dans le dictionnaire de mot clé
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="synonymesByProduct"></param>
+        public void AddAttribute(ProductType type, string attributeTypeName, string attribute, string synonymes)
+        {
+            AddAttributes(type, attributeTypeName, new Dictionary<string, string> { { attribute, synonymes } });
         }
 
         /// <summary>
@@ -204,7 +233,26 @@ namespace OcrInt
                 // 12.3x4.5 -> 12.3x4.5 + 12.3 x 4.5
                 var formatMatch = FORMAT_REGEX.Match(s);
                 if (formatMatch.Success)
-                    declinations.Add(FORMAT_REGEX.Replace(s, "$1 x $2"));
+                {
+                    var x = formatMatch.Groups[1].Value;
+                    var y = formatMatch.Groups[2].Value;
+                    var unite = formatMatch.Groups[3].Value;
+
+                    if(String.IsNullOrEmpty(unite))
+                    {
+                        declinations.Add($"{x}x{y}");
+                        declinations.Add($"{x} x {y}");
+                        return declinations;
+                    }
+                    else
+                    {
+                        declinations.Add($"{x}x{y}{unite}");
+                        declinations.Add($"{x} x {y}{unite}");
+                        declinations.Add($"{x}x{y} {unite}");
+                        declinations.Add($"{x} x {y} {unite}");
+                        return declinations;
+                    }
+                }
 
                 var grammageMatch = GRAMMAGE_REGEX.Match(s);
                 if (grammageMatch.Success)
@@ -220,20 +268,23 @@ namespace OcrInt
                         declinations.Add($"{grammage} g");
                         declinations.Add($"{grammage}gr");
                         declinations.Add($"{grammage} gr");
+                        return declinations;
                     }
-                    else if (grammageUnite == "g/m²".Simplify())
+                    else if (grammageUnite == "g|m²")
                     {
                         //80g/m²; 80 g/m²; 80gr/m²; 80 gr/m²
-                        declinations.Add($"{grammage}g/m²".Simplify());
-                        declinations.Add($"{grammage} g/m²".Simplify());
-                        declinations.Add($"{grammage}gr/m²".Simplify());
-                        declinations.Add($"{grammage} gr/m²".Simplify());
+                        declinations.Add($"{grammage}g | m2");
+                        declinations.Add($"{grammage} g | m2");
+                        declinations.Add($"{grammage}gr | m2");
+                        declinations.Add($"{grammage} gr | m2");
+                        return declinations;
                     }
                     else if (grammageUnite == "mm")
                     {
                         //80mm; 80 mm
                         declinations.Add($"{grammage}mm");
                         declinations.Add($"{grammage} mm");
+                        return declinations;
                     }
                 }
 
@@ -267,7 +318,7 @@ namespace OcrInt
                     var chr = text[i];
 
                     // Nous utilisons un tableau pour les actions, car c’est plus rapide que des «if, else» imbriqués
-                    var action = chr > 127 ? Action.None : charToActions[chr];
+                    var action = chr > 127 ? Action.None : Char2Actions[chr];
 
                     // Si le caractère n'est pas lié à une action de séparation de mot
                     if (action == Action.None)

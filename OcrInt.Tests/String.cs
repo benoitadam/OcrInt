@@ -43,10 +43,10 @@ namespace OcrInt.Tests
         [Fact]
         public void Simplify()
         {
-            Assert.Equal("$@¡¢£¤¥¦§".Simplify(), "$@ cEoY S");
-            Assert.Equal("HeLlo^$".Simplify(), "HeLlo'$");
+            Assert.Equal("$@¡¢£¤¥¦§".Simplify(), "$@ ceoy s");
+            Assert.Equal("HeLlo^$".Simplify(), "hello'$");
             Assert.Equal("<html></html>".Simplify(), "<html><|html>");
-            Assert.Equal("Héllô!".Simplify(), "Hello|");
+            Assert.Equal("Héllô!".Simplify(), "hello|");
             Assert.Equal("àé ~-(x)".Simplify(), "ae --(x)");
             Assert.Equal("a\r\n   \r\nb\r\n  ".Simplify(), "a\n\nb\n");
             Assert.Equal("  a    b   -  c  \r\n".Simplify(), "a b - c\n");
