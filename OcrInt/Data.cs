@@ -530,85 +530,128 @@ namespace OcrInt
                 { "90 pochettes", "90 pochettes" },
                 { "100 pochettes", "100 pochettes" },
             });
-            tags.AddAttributes(p9, "", new Dictionary<string, string>{
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-            });
-            tags.AddAttributes(p9, "", new Dictionary<string, string>{
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
+            tags.AddAttributes(p9, "Format", new Dictionary<string, string>{
+                { "A4", "A4" },
+                { "A4+", "A4+" },
+                { "24x32", "24x32" },
+                { "17x22", "17x22" },
             });
 
             #endregion
 
-            #region PRODUIT 7 - Pochette
+            #region PRODUIT 10 - Rouleau
 
-            var p7 = productTypes[7];
-            tags.AddProducts(p7, new Dictionary<string, string>{
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
+            var p10 = productTypes[10];
+            tags.AddProducts(p10, new Dictionary<string, string>{
+                { "Rouleau", "rouleau" },
             });
-            tags.AddAttributes(p7, "", new Dictionary<string, string>{
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
-                { "", "" },
+            tags.AddAttributes(p10, "Nature", new Dictionary<string, string>{
+                { "couvre livres", "couvre livre(s)" },
+                { "papier kraft", "papier kraft" },
+            });
+            tags.AddAttributes(p10, "Nature 2", new Dictionary<string, string>{
+                { "plastique", "plastique" },
+                { "adhésif", "adhésif" },
+                { "adhésif repositionnable", "adhésif repositionnable" },
+            });
+            tags.AddAttributes(p10, "Nature 3", new Dictionary<string, string>{
+                { "crystal", "crystal" },
+                { "lisse", "lisse" },
+                { "grainé", "grainé" },
+                { "incolore", "incolore" },
+            });
+            tags.AddAttributes(p10, "Format", new Dictionary<string, string>{
+                { "0.4x4m", "0.4x4m" },
+                { "0.4x5m", "0.4x5m" },
+                { "0.7x2m", "0.7x2m" },
             });
 
             #endregion
 
-            tags["grand"].Attributes[1, "format"] = "grand";
-            tags["grand format"].Attributes[1, "format"] = "grand";
-            tags["24x32"].Attributes[1, "format"] = "grand";
-            tags["24 x 32"].Attributes[1, "format"] = "24x32";
-            tags["grands carreaux"].Attributes[1, "réglure"] = "grands carreaux";
-            tags["96"].Attributes[1, "pages"] = "96";
-            tags["96 pages"].Attributes[1, "pages"] = "96";
+            #region PRODUIT 11 - Protège-cahier
 
-            // 2
-            tags["pochette"].Products[3] = "Pochette";
-            tags["pochette papier"].Products[3] = "Pochette Papier";
-            tags["pochette de papier"].Products[3] = "Pochette Papier";
-            tags["pochettes de papier"].Products[3] = "Pochette Papier";
-            tags["calque"].Attributes[3, "type de papier"] = "Calque";
-            tags["50 feuilles"].Attributes[3, "nb de feuilles"] = "50 feuilles";
+            var p11 = productTypes[11];
+            tags.AddProducts(p11, new Dictionary<string, string>{
+                { "Protège-cahier", "protege - cahier;protege-cahier;protege cahier" },
+            });
+            tags.AddAttributes(p11, "Nature", new Dictionary<string, string>{
+                { "translucide", "translucide" },
+                { "opaque", "opaque" },
+            });
+            tags.AddAttributes(p11, "Nature 2", new Dictionary<string, string>{
+                { "rabats", "(avec) rabats" },
+                { "!rabats", "sans rabats" },
+            });
+            tags.AddAttributes(p11, "Matière", new Dictionary<string, string>{
+                { "plastique", "plastique" },
+                { "PVC", "PVC" },
+                { "polypropylène", "polypropylène" },
+                { "cristal", "cristal" },
+            });
+            tags.AddAttributes(p11, "Format", new Dictionary<string, string>{
+                { "17x22", "17x22" },
+                { "A4", "A4" },
+                { "24x32", "24x32" },
+            });
+            tags.AddAttributes(p11, "Couleur", new Dictionary<string, string>{
+                { "rouge", "rouge" },
+                { "bleu", "bleu" },
+                { "vert", "vert" },
+                { "jaune", "jaune" },
+                { "incolore", "incolore" },
+                { "noir", "noir" },
+                { "violet", "violet" },
+                { "rose", "rose" },
+                { "orange", "orange" },
+            });
 
-            // 3
-            tags["compa"].Products[4] = "Compas";
-            tags["compas"].Products[4] = "Compas";
-            tags["qualite"].Attributes[4, "qualité"] = "bonne";
-            tags["de qualite"].Attributes[4, "qualité"] = "bonne";
-            tags["20 cm"].Attributes[4, "ouverture"] = "20 cm";
-            tags["ouverture 20 cm"].Attributes[4, "ouverture"] = "20 cm";
+            #endregion
+
+            #region PRODUIT 12 - Enveloppe
+
+            var p12 = productTypes[12];
+            tags.AddProducts(p12, new Dictionary<string, string>{
+                { "enveloppe", "enveloppe" },
+                { "pochette administrative", "pochette administrative" },
+            });
+            tags.AddAttributes(p12, "", new Dictionary<string, string>{
+                { "blanche", "blanche" },
+                { "Kraft", "Kraft" },
+                { "à bulle", "(a) bulle" },
+                { "kraft à soufflet", "kraft (a) soufflet" },
+            });
+
+            #endregion
+
+            #region AUTRES
+
+
+
+            #endregion
+
+            //tags["grand"].Attributes[1, "format"] = "grand";
+            //tags["grand format"].Attributes[1, "format"] = "grand";
+            //tags["24x32"].Attributes[1, "format"] = "grand";
+            //tags["24 x 32"].Attributes[1, "format"] = "24x32";
+            //tags["grands carreaux"].Attributes[1, "réglure"] = "grands carreaux";
+            //tags["96"].Attributes[1, "pages"] = "96";
+            //tags["96 pages"].Attributes[1, "pages"] = "96";
+
+            //// 2
+            //tags["pochette"].Products[3] = "Pochette";
+            //tags["pochette papier"].Products[3] = "Pochette Papier";
+            //tags["pochette de papier"].Products[3] = "Pochette Papier";
+            //tags["pochettes de papier"].Products[3] = "Pochette Papier";
+            //tags["calque"].Attributes[3, "type de papier"] = "Calque";
+            //tags["50 feuilles"].Attributes[3, "nb de feuilles"] = "50 feuilles";
+
+            //// 3
+            //tags["compa"].Products[4] = "Compas";
+            //tags["compas"].Products[4] = "Compas";
+            //tags["qualite"].Attributes[4, "qualité"] = "bonne";
+            //tags["de qualite"].Attributes[4, "qualité"] = "bonne";
+            //tags["20 cm"].Attributes[4, "ouverture"] = "20 cm";
+            //tags["ouverture 20 cm"].Attributes[4, "ouverture"] = "20 cm";
 
             return tags;
         }
